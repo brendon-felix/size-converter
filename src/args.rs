@@ -3,6 +3,8 @@ use clap::Parser;
 
 #[derive(Parser, Debug)]
 pub struct Args {
+    #[arg(short, long)]
+    pub bits: bool,
     /// Size in bytes/bits to convert
     pub size: String,
     /// Convert to new unit/base
@@ -19,13 +21,21 @@ pub fn parse_unit_base(s: &str) -> (Unit, Base) {
         s if s.starts_with('M') => Unit::Mega,
         s if s.starts_with('G') => Unit::Giga,
         s if s.starts_with('T') => Unit::Tera,
-        s if s.ends_with('b') || s.ends_with('B') => Unit::Abs,
+        s if s.is_empty() ||
+            s.ends_with('b') ||
+            s.ends_with('B') ||
+            s.to_lowercase().ends_with("bits") ||
+            s.to_lowercase().ends_with("bytes") => Unit::Abs,
+        // s if s == "" => 
         _ => panic!("Invalid unit"),
     };
 
     let base = match s {
-        s if s.ends_with('b') => Base::Bit,
-        s if s.ends_with('B') => Base::Byte,
+        s if s.ends_with('b') ||
+            s.to_lowercase().ends_with("bits") => Base::Bit,
+        s if s.is_empty() ||
+            s.ends_with('B') ||
+            s.to_lowercase().ends_with("bytes") => Base::Byte,
         _ => panic!("Invalid base")
     };
 

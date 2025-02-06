@@ -8,7 +8,9 @@ use convert::{convert, Unit, Base};
 
 fn main() {
     let args = Args::parse();
+    // dbg!(args.bits);
     let size = parse_size(&args.size);
+    // dbg!(&size);
     match &args.to {
         Some(s) => {
             let (unit, base) = parse_unit_base(s);
